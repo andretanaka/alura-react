@@ -1,48 +1,72 @@
-import React, { Component } from 'react';
+import React from 'react';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Button from '@material-ui/core/Button'
 
-const TableHead = () => {
-    return (
-        <thead>
-            <tr>
-                <th>Autores</th>
-                <th>Livros</th>
-                <th>Precos</th>
-                <th>Remover</th>
-            </tr>
-        </thead>
-    );
-}
-
-const TableBody = props => {
-
-    const linhas = props.autores.map((linha, index) => {
-        return (
-            <tr key={index}>
-                <td>{linha.nome}</td>
-                <td>{linha.livro}</td>
-                <td>{linha.preco}</td>
-                <td><button onClick={ () => { props.removeAutor(linha.id) }} className="waves-effect waves-light indigo btn">Remover</button></td>
-            </tr>
-        );
-    });
+const CellDeleta = ({ removeDados, id }) => {
+    if (!removeDados) {
+        return null
+    }
 
     return (
-        <tbody>
-            {linhas}
-        </tbody>
+        <TableCell>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => { removeDados(id) }}>
+                Remover
+                </Button>
+        </TableCell>
     )
 }
 
-class Tabela extends Component {
-    render() {
-        const { autores, removeAutor } = this.props;
-        return (
-            <table className="centered highlight">
-                <TableHead />
-                <TableBody autores={autores} removeAutor={ removeAutor }/>
-            </table>
-        );
+const TituloDeleta = ({ removeDados }) => {
+    if (!removeDados) {
+        return null
     }
+    return <TableCell>Remover</TableCell>
 }
+
+const Tabela = props => {
+    const { campos, dados, removeDados } = props;
+    return (
+        <Table>
+            <TableHead>
+                <TableRow>
+                    {
+                        campos.map(campo => (
+                            <TableCell>{campo.titulo}</TableCell>
+                        ))
+                    }
+                    <TituloDeleta
+                        removeDados={removeDados}
+                    />
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {
+                    dados.map(dados => (
+                        <TableRow key={dados.id}>
+                            {campos.map(campo => (
+                                <TableCell>
+                                    {dados[campo.dado]}
+                                </TableCell>
+                            ))}
+                            <CellDeleta
+                                id={dados.id}
+                                removeDados={removeDados}
+                            />
+
+                        </TableRow>
+                    ))
+                }
+            </TableBody>
+        </Table>
+    );
+}
+
 
 export default Tabela;

@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import 'materialize-css/dist/css/materialize.min.css';
 import './Home.css';
 
-
 import Header from '../../Components/Header/Header';
 import Tabela from '../../Components/Tabela/Tabela';
 import Form from '../../Components/Formulario/Formulario';
@@ -36,7 +35,12 @@ class App extends Component {
       .catch(err => PopUp.exibeMensagem("error", "Erro ao remover"))
   }
 
-  escutadorDeSubmit = autor => {
+  escutadorDeSubmit = dados => {
+    const autor = {
+      nome: dados.nome,
+      livro: dados.livro,
+      preco: dados.preco
+    }
     ApiService.CriaAutor(JSON.stringify(autor))
       .then(res => {
         if (res.message === 'success') {
@@ -60,15 +64,25 @@ class App extends Component {
 
   render() {
 
-    ApiService.ListaLivros()
-      .then(res => console.log(res.data));
+    const campos = [
+      { titulo: 'Autores', dado: 'nome' },
+      { titulo: 'Livros', dado: 'livro' },
+      { titulo: 'Precos', dado: 'preco' }
+    ]
     return (
       <Fragment>
         <Header />
         <div className="mb-10">
           <h1>Casa do codigo</h1>
-          <Tabela autores={this.state.autores} removeAutor={this.removeAutor} />
-          <Form escutadorDeSubmit={this.escutadorDeSubmit} />
+          <Form
+            escutadorDeSubmit={this.escutadorDeSubmit}
+          />
+          <Tabela
+            campos={campos}
+            dados={this.state.autores}
+            removeDados={this.removeAutor}
+          />
+          
         </div>
       </Fragment>
     );
