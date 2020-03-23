@@ -35,7 +35,12 @@ class App extends Component {
       .catch(err => PopUp.exibeMensagem("error", "Erro ao remover"))
   }
 
-  escutadorDeSubmit = autor => {
+  escutadorDeSubmit = dados => {
+    const autor = {
+      nome: dados.nome,
+      livro: dados.livro,
+      preco: dados.preco
+    }
     ApiService.CriaAutor(JSON.stringify(autor))
       .then(res => {
         if (res.message === 'success') {
@@ -69,14 +74,15 @@ class App extends Component {
         <Header />
         <div className="mb-10">
           <h1>Casa do codigo</h1>
+          <Form
+            escutadorDeSubmit={this.escutadorDeSubmit}
+          />
           <Tabela
             campos={campos}
             dados={this.state.autores}
             removeDados={this.removeAutor}
           />
-          <Form
-            escutadorDeSubmit={this.escutadorDeSubmit}
-          />
+          
         </div>
       </Fragment>
     );
